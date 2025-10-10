@@ -9,22 +9,22 @@ export function array_filter<T>(array: T[], callback?: (value: T) => boolean, _m
 /**
  * @link https://php.net/manual/en/function.array-map.php
  */
-export function array_map<TItem, TReturn>(
-    callback?: (...item: TItem[]) => TReturn | null,
-    ...arrays: TItem[][]
+export function array_map<TItem extends unknown[], TReturn>(
+    callback?: (...items: TItem) => TReturn,
+    ...arrays: { [K in keyof TItem]: TItem[K][] }
 ): TReturn[] {
     // Determine iteration length (shortest array).
     const minLen = Math.min(...arrays.map((a) => a.length));
-    const result: any[] = [];
+    const result: TReturn[] = [];
 
     for (let i = 0; i < minLen; i++) {
         const args = arrays.map((a) => a[i]);
 
         if (callback) {
-            result.push(callback(...args));
+            result.push(callback(...(args as any)));
         } else {
             // Undefined callback: return zipped arrays.
-            result.push(args);
+            result.push(args as any);
         }
     }
 
@@ -34,16 +34,16 @@ export function array_map<TItem, TReturn>(
 /**
  * @link https://php.net/manual/en/function.array-reduce.php
  */
-export function array_reduce<TItem, TCarry>(
+export function array_reduce<TItem, TCarry = TItem>(
     array: TItem[],
     callback: (carry: TCarry, item: TItem) => TCarry,
     initial?: TCarry,
-): TCarry | null {
+): TCarry {
     if (array.length === 0 && !initial) {
-        return null;
+        return null as any;
     }
 
-    let carry: any = initial ? initial : array[0];
+    let carry = initial ? (initial as TCarry) : (array[0] as unknown as TCarry);
     const start = initial ? 0 : 1;
 
     for (let i = start; i < array.length; i++) {
@@ -158,13 +158,6 @@ export function ceil(num: number): number {
     return Math.ceil(num);
 }
 
-/**
- * @link https://laravel.com/docs/12.x/strings#method-class-basename
- */
-export function class_basename(className: string): string {
-    return basename(str_replace('\\', '/', className));
-}
-
 export const COUNT_NORMAL = 0;
 export const COUNT_RECURSIVE = 1;
 
@@ -174,11 +167,9 @@ export const COUNT_RECURSIVE = 1;
 export function count(value: any[], mode: typeof COUNT_NORMAL | typeof COUNT_RECURSIVE = COUNT_NORMAL): number {
     if (mode === COUNT_RECURSIVE) {
         return value.reduce((total: number, item) => {
-            if (Array.isArray(item)) {
-                return total + count(item, COUNT_RECURSIVE);
-            }
+            total += 1;
 
-            return total + 1;
+            return Array.isArray(item) ? total + count(item, COUNT_RECURSIVE) : total;
         }, 0);
     }
 
@@ -464,12 +455,14 @@ export function implode(separator: string = '', array: any[]): string {
  */
 export function in_array(needle: any, haystack: any[], strict: boolean = false): boolean {
     for (const value of haystack) {
-        if (strict && needle === value) {
-            return true;
-        }
-
-        if (needle == value) {
-            return true;
+        if (strict) {
+            if (needle === value) {
+                return true;
+            }
+        } else {
+            if (needle == value) {
+                return true;
+            }
         }
     }
 
@@ -1101,7 +1094,7 @@ export function preg_match_all(
 export function preg_quote(str: string, delimiter?: string): string {
     // Characters PHP escapes in preg_quote: . \ + * ? [ ^ ] $ ( ) { } = ! < > | : -
     // We'll use a regex to escape them.
-    let escaped = str.replace(/[.\\+*?[^]$(){}=!<>|:\-]/g, '\\$&');
+    let escaped = str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
     if (delimiter) {
         // Escape the delimiter too, if present.
@@ -1785,6 +1778,9 @@ export function strip_tags(string: string, allowedTags: string | string[] = ''):
 
     // Remove PHP code blocks.
     string = string.replace(/<\?(?:php)?[\s\S]*?\?>/gi, '');
+
+    // Remove HTML comments.
+    string = string.replace(/<!--[\s\S]*?-->/g, '');
 
     // Remove unwanted tags.
     return string.replace(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi, (match, tagName) =>

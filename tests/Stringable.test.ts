@@ -16,10 +16,6 @@ test('basename', () => {
     expect(new Stringable('/foo/bar/baz.jpg').basename('.jpg').toString()).toBe('baz');
 });
 
-test('classBasename', () => {
-    expect(new Stringable('App\\Models\\User').classBasename().toString()).toBe('User');
-});
-
 test('dirname', () => {
     expect(new Stringable('/framework/tests/Support').dirname().toString()).toBe('/framework/tests');
     expect(new Stringable('/framework/tests/Support').dirname(2).toString()).toBe('/framework');
@@ -337,7 +333,6 @@ test('whenIs', () => {
     ).toBe('Winner: /');
 
     expect(new Stringable('/').whenIs(' /', (self) => self.prepend('Winner: ')).toString()).toBe('/');
-
     expect(
         new Stringable('/')
             .whenIs(

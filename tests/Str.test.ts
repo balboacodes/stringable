@@ -420,7 +420,6 @@ test('is', () => {
     expect(Str.is('/', ' /')).toBe(false);
     expect(Str.is('/', '/a')).toBe(false);
     expect(Str.is('foo/*', 'foo/bar/baz')).toBe(true);
-
     expect(Str.is('*@*', 'App\\Class@method')).toBe(true);
     expect(Str.is('*@*', 'app\\Class@')).toBe(true);
     expect(Str.is('*@*', '@method')).toBe(true);
@@ -443,7 +442,6 @@ test('is', () => {
     expect(Str.is(['a*', 'b*'], 'a/')).toBe(true);
     expect(Str.is(['a*', 'b*'], 'b/')).toBe(true);
     expect(Str.is(['a*', 'b*'], 'f/')).toBe(false);
-
     expect(Str.is('*/foo', 'blah/baz/foo')).toBe(true);
 
     // Empty patterns.

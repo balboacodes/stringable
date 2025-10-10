@@ -426,7 +426,7 @@ export class Str {
             // Asterisks are translated into zero-or-more regular expression wildcards
             // to make it convenient to check if the strings starts with the given
             // pattern such as "library/*", making any string check convenient.
-            p = str_replace('\*', '.*', p);
+            p = str_replace('\\*', '.*', p);
 
             if (preg_match('#^' + p + '$#' + (ignoreCase ? 'isu' : 'su'), value)) {
                 return true;

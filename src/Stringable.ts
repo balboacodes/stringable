@@ -1,7 +1,7 @@
 import { Str } from './Str';
 // prettier-ignore
 import {
-    basename, class_basename, dirname, explode, FILTER_VALIDATE_INT, filter_var, hash, implode, mb_str_split, preg_split, sscanf, str_repeat, strip_tags,
+    basename, dirname, explode, FILTER_VALIDATE_INT, filter_var, hash, implode, mb_str_split, preg_split, sscanf, str_repeat, strip_tags,
 } from './utils';
 
 export class Stringable {
@@ -108,9 +108,6 @@ export class Stringable {
     /**
      * Get the basename of the class path.
      */
-    public classBasename(): Stringable {
-        return new Stringable(class_basename(this.value));
-    }
 
     /**
      * Determine if a given string contains a given substring.
