@@ -2,7 +2,7 @@ import { Str } from './Str';
 // prettier-ignore
 import {
     basename, dirname, explode, FILTER_VALIDATE_INT, filter_var, hash, implode, mb_str_split, preg_split, sscanf, str_repeat, strip_tags,
-} from './utils';
+} from '@balboacodes/php-utils';
 
 export class Stringable {
     /**

@@ -1,6 +1,6 @@
+import { hash } from '@balboacodes/php-utils';
+import { expect, expectTypeOf, test } from 'vitest';
 import { Stringable } from '../src/Stringable';
-import { hash } from '../src/utils';
-import { test, expect, expectTypeOf } from 'vitest';
 
 test('constructor', () => {
     expect(new Stringable('test').toString()).toBe('test');

@@ -2,7 +2,7 @@ import { Stringable } from './Stringable';
 // prettier-ignore
 import {
     array_filter, array_map, array_reduce, array_reverse, array_shift, base64_decode, base64_encode, ceil, count, ctype_lower, empty, explode, implode, in_array, isset, lcfirst, ltrim, max, MB_CASE_TITLE, mb_convert_case, mb_split, mb_str_pad, mb_str_split, mb_strimwidth, mb_strlen, mb_strpos, mb_strrpos, mb_strtolower, mb_strtoupper, mb_strwidth, mb_substr, preg_match, preg_match_all, preg_quote, preg_replace, preg_replace_callback, preg_split, PREG_SPLIT_NO_EMPTY, random_bytes, random_int, rtrim, str_contains, str_ends_with, str_ireplace, STR_PAD_BOTH, STR_PAD_LEFT, STR_PAD_RIGHT, str_repeat, str_replace, str_starts_with, str_word_count, strip_tags, strlen, strpos, strrpos, strstr, strtr, substr, substr_count, substr_replace, trim, ucwords, wordwrap,
-} from './utils';
+} from '@balboacodes/php-utils';
 
 export class Str {
     /**
