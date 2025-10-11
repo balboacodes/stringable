@@ -33,7 +33,6 @@
         "test:stringable": "vitest Stringable.test.ts"
     },
     "devDependencies": {
-        "@types/node": "^24.7.1",
         "prettier": "^3.6.2",
         "typescript": "^5.9.3",
         "vite": "^7.1.9",
