@@ -45,7 +45,3 @@ const slice = str('This is my name').after('This is ').title(); // 'My Name'
 ## Documentation
 
 Documentation for the methods can be found on Laravel's [Strings documentation](https://laravel.com/docs/12.x/strings) page. Just translate PHP's syntax to JS like shown above.
-
-## License
-
-Stringable is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
