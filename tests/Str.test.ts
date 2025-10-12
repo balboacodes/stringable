@@ -139,6 +139,7 @@ test('camel', () => {
 
     expect(Str.camel('FooBar')).toBe('fooBar');
     expect(Str.camel('foo_bar')).toBe('fooBar');
+
     // Test cache.
     expect(Str.camel('foo_bar')).toBe('fooBar');
     expect(Str.camel('Foo-barBaz')).toBe('fooBarBaz');
@@ -147,7 +148,6 @@ test('camel', () => {
     expect(Str.camel('')).toBe('');
     expect(Str.camel('LARAVEL_PHP_FRAMEWORK')).toBe('lARAVELPHPFRAMEWORK');
     expect(Str.camel('   laravel   php   framework   ')).toBe('laravelPhpFramework');
-
     expect(Str.camel('foo1_bar')).toBe('foo1Bar');
     expect(Str.camel('1 foo bar')).toBe('1FooBar');
 });
@@ -248,7 +248,7 @@ test('doesntEndWith', () => {
     expect(Str.doesntEndWith('jason', 'N')).toBe(true);
     expect(Str.doesntEndWith('7', ' 7')).toBe(true);
     expect(Str.doesntEndWith('a7', '7')).toBe(false);
-    // Test for multibyte string support.
+
     expect(Str.doesntEndWith('Jönköping', 'öping')).toBe(false);
     expect(Str.doesntEndWith('Malmö', 'mö')).toBe(false);
     expect(Str.doesntEndWith('Jönköping', 'oping')).toBe(true);
@@ -270,7 +270,7 @@ test('doesntStartWith', () => {
     expect(Str.doesntStartWith('', '')).toBe(true);
     expect(Str.doesntStartWith('7', ' 7')).toBe(true);
     expect(Str.doesntStartWith('7a', '7')).toBe(false);
-    // Test for multibyte string support.
+
     expect(Str.doesntStartWith('Jönköping', 'Jö')).toBe(false);
     expect(Str.doesntStartWith('Malmö', 'Malmö')).toBe(false);
     expect(Str.doesntStartWith('Jönköping', 'Jonko')).toBe(true);
@@ -293,7 +293,6 @@ test('endsWith', () => {
     expect(Str.endsWith('7', ' 7')).toBe(false);
     expect(Str.endsWith('a7', '7')).toBe(true);
 
-    // Multibyte string support.
     expect(Str.endsWith('Jönköping', 'öping')).toBe(true);
     expect(Str.endsWith('Malmö', 'mö')).toBe(true);
     expect(Str.endsWith('Jönköping', 'oping')).toBe(false);
@@ -332,7 +331,6 @@ test('excerpt', () => {
     ).toBe(
         'This is the ultimate supercalifragilisticexpialidocious very looooooooooooooooooong looooooooooooong beautiful morning with amazing sunshine and awesome tempera[...]',
     );
-
     expect(Str.excerpt('taylor', 'y', { radius: 0 })).toBe('...y...');
     expect(Str.excerpt('taylor', 'Y', { radius: 1 })).toBe('...ayl...');
     expect(Str.excerpt('<div> The article description </div>', 'article')).toBe('<div> The article description </div>');
@@ -538,7 +536,6 @@ test('lower', () => {
 
 test('ltrim', () => {
     const escape = (s: string) => s.replace(/[-\\^]/g, '\\$&');
-
     const ltrimDefaultChars = [' ', '\n', '\r', '\t', '\v'];
     const ltrimDefaultClass = ltrimDefaultChars.map(escape).join('');
     const defaultLtrimRegex = new RegExp(`^[${ltrimDefaultClass}]+`);
@@ -549,14 +546,12 @@ test('ltrim', () => {
     expect(Str.ltrim('ム')).toBe('ム');
     expect(Str.ltrim('   だ    ')).toBe('だ    ');
     expect(Str.ltrim('   ム    ')).toBe('ム    ');
-
     expect(
         Str.ltrim(`
                 foo bar
             `),
     ).toBe(`foo bar
             `);
-
     expect(Str.ltrim(' \xE9 ')).toBe('\xE9 ');
 
     // Loop to test each default trim char.
@@ -632,20 +627,11 @@ test('padRight', () => {
 });
 
 test('password', () => {
-    const pwDefault = Str.password();
+    expect(Str.password().length).toBe(32);
+    expect(Str.password().includes(' ')).toBe(false);
+    expect(Str.password(32, true, true, true, true).includes(' ')).toBe(true);
 
-    expect(pwDefault.length).toBe(32);
-
-    const pwNoSpaces = Str.password();
-
-    expect(pwNoSpaces.includes(' ')).toBe(false);
-
-    const pwWithSpaces = Str.password(32, true, true, true, true);
-
-    expect(pwWithSpaces.includes(' ')).toBe(true);
-
-    const pwHasNumber = Str.password();
-    const hasNumber = '0123456789'.split('').some((digit) => pwHasNumber.includes(digit));
+    const hasNumber = '0123456789'.split('').some((digit) => Str.password().includes(digit));
 
     expect(hasNumber).toBe(true);
 });
@@ -680,7 +666,6 @@ test('whether the number of generated characters is equally distributed', () => 
 
     for (let i = 0; i < 620000; i++) {
         const random = Str.random(1);
-
         results[random] = (results[random] ?? 0) + 1;
     }
 
@@ -748,7 +733,6 @@ test('replaceEnd', () => {
     expect(Str.replaceEnd('', 'yyy', 'foobar foobar')).toBe('foobar foobar');
     expect(Str.replaceEnd('xxx', 'yyy', 'fooxxx foobar')).toBe('fooxxx foobar');
 
-    // Test for multibyte string support.
     expect(Str.replaceEnd('ö', 'xxx', 'Malmö Jönköping')).toBe('Malmö Jönköping');
     expect(Str.replaceEnd('öping', 'yyy', 'Malmö Jönköping')).toBe('Malmö Jönkyyy');
 });
@@ -761,7 +745,6 @@ test('replaceFirst', () => {
     expect(Str.replaceFirst('', 'yyy', 'foobar foobar')).toBe('foobar foobar');
     expect(Str.replaceFirst('0', '1', '0')).toBe('1');
 
-    // Test for multibyte string support.
     expect(Str.replaceFirst('ö', 'xxx', 'Jönköping Malmö')).toBe('Jxxxnköping Malmö');
     expect(Str.replaceFirst('', 'yyy', 'Jönköping Malmö')).toBe('Jönköping Malmö');
 });
@@ -773,7 +756,6 @@ test('replaceLast', () => {
     expect(Str.replaceLast('xxx', 'yyy', 'foobar foobar')).toBe('foobar foobar');
     expect(Str.replaceLast('', 'yyy', 'foobar foobar')).toBe('foobar foobar');
 
-    // Test for multibyte string support.
     expect(Str.replaceLast('ö', 'xxx', 'Malmö Jönköping')).toBe('Malmö Jönkxxxping');
     expect(Str.replaceLast('', 'yyy', 'Malmö Jönköping')).toBe('Malmö Jönköping');
 });
@@ -804,7 +786,6 @@ test('replaceStart', () => {
     expect(Str.replaceStart('foo/bar?', 'qux?', 'foo/bar? foo/bar?')).toBe('qux? foo/bar?');
     expect(Str.replaceStart('foo', '', 'foobar foobar')).toBe('bar foobar');
 
-    // Test for multibyte string support.
     expect(Str.replaceStart('Jö', 'xxx', 'Jönköping Malmö')).toBe('xxxnköping Malmö');
     expect(Str.replaceStart('', 'yyy', 'Jönköping Malmö')).toBe('Jönköping Malmö');
 });
@@ -817,7 +798,6 @@ test('reverse', () => {
 
 test('rtrim', () => {
     const escape = (s: string) => s.replace(/[-\\^]/g, '\\$&');
-
     const rtrimDefaultChars = [' ', '\n', '\r', '\t', '\v'];
     const rtrimDefaultClass = rtrimDefaultChars.map(escape).join('');
     const defaultRtrimRegex = new RegExp(`[${rtrimDefaultClass}]+$`);
@@ -1015,7 +995,6 @@ test('trim', () => {
                 foo bar
             `),
     ).toBe('foo bar');
-
     expect(
         Str.trim(`
                 foo
@@ -1023,7 +1002,6 @@ test('trim', () => {
             `),
     ).toBe(`foo
                 bar`);
-
     expect(Str.trim(' \xE9 ')).toBe('\xE9');
 
     const trimDefaultChars = [' ', '\n', '\r', '\t', '\v'];

@@ -36,7 +36,6 @@ test('explode', () => {
     expectTypeOf(new Stringable('Foo Bar Baz').explode(' ')).toEqualTypeOf<string[]>();
     expect(new Stringable('Foo Bar Baz').explode(' ')).toEqual(['Foo', 'Bar', 'Baz']);
 
-    //  With limit.
     expect(new Stringable('Foo Bar Baz').explode(' ', 2)).toEqual(['Foo', 'Bar Baz']);
     expect(new Stringable('Foo Bar Baz').explode(' ', -1)).toEqual(['Foo', 'Bar']);
 });
@@ -109,7 +108,6 @@ test('test', () => {
 
 test('when', () => {
     expect(new Stringable('when').when(false, (self, val) => self.append(val).append('false')).toString()).toBe('when');
-
     expect(
         new Stringable('when false ')
             .when(
@@ -121,7 +119,6 @@ test('when', () => {
     ).toBe('when false fallbacks to default');
 
     expect(new Stringable('when ').when(true, (self) => self.append('true')).toString()).toBe('when true');
-
     expect(
         new Stringable('gets a value ')
             .when(
@@ -147,7 +144,6 @@ test('whenContains', () => {
     expect(new Stringable('stark').whenContains('xxx', (self) => self.prepend('Tony ').title()).toString()).toBe(
         'stark',
     );
-
     expect(
         new Stringable('stark')
             .whenContains(
@@ -205,7 +201,6 @@ test('whenDoesntEndWith', () => {
     ).toBe('Tony Stark');
 
     expect(new Stringable('tony stark').whenDoesntEndWith(['xxx'], (self) => self).toString()).toBe('tony stark');
-
     expect(
         new Stringable('tony stark')
             .whenDoesntEndWith(
@@ -227,7 +222,6 @@ test('whenDoesntStartWith', () => {
             )
             .toString(),
     ).toBe('Tony Stark');
-
     expect(
         new Stringable('tony stark')
             .whenDoesntStartWith(
@@ -255,7 +249,6 @@ test('whenEmpty', () => {
     const stringable = new Stringable();
 
     expect(stringable.whenEmpty().toString()).toBe(stringable.toString());
-
     expect(new Stringable().whenEmpty(() => new Stringable('empty')).toString()).toBe('empty');
 
     expect(new Stringable('not-empty').whenEmpty(() => new Stringable('empty')).toString()).toBe('not-empty');
@@ -271,7 +264,6 @@ test('whenEndsWith', () => {
             )
             .toString(),
     ).toBe('Tony Stark');
-
     expect(
         new Stringable('tony stark')
             .whenEndsWith(
@@ -283,7 +275,6 @@ test('whenEndsWith', () => {
     ).toBe('Tony Stark');
 
     expect(new Stringable('tony stark').whenEndsWith(['xxx'], (self) => self.title()).toString()).toBe('tony stark');
-
     expect(
         new Stringable('tony stark')
             .whenEndsWith(
@@ -315,7 +306,6 @@ test('whenExactly', () => {
             )
             .toString(),
     ).toBe('Swing and a miss...!');
-
     expect(new Stringable('Tony Stark').whenExactly('Iron Man', () => new Stringable('Nailed it...!')).toString()).toBe(
         'Tony Stark',
     );
@@ -331,8 +321,8 @@ test('whenIs', () => {
             )
             .toString(),
     ).toBe('Winner: /');
-
     expect(new Stringable('/').whenIs(' /', (self) => self.prepend('Winner: ')).toString()).toBe('/');
+
     expect(
         new Stringable('/')
             .whenIs(
@@ -352,7 +342,6 @@ test('whenNotEmpty', () => {
     const stringable = new Stringable();
 
     expect(stringable.whenNotEmpty((self) => self.append('.')).toString()).toBe(stringable.toString());
-
     expect(new Stringable().whenNotEmpty((self) => self.append('.')).toString()).toBe('');
 
     expect(new Stringable('Not empty').whenNotEmpty((self) => self.append('.')).toString()).toBe('Not empty.');
@@ -384,7 +373,6 @@ test('whenStartsWith', () => {
             )
             .toString(),
     ).toBe('Tony Stark');
-
     expect(
         new Stringable('tony stark')
             .whenStartsWith(
@@ -428,7 +416,6 @@ test('whenTest', () => {
             )
             .toString(),
     ).toBe('Try again');
-
     expect(new Stringable('foo bar').whenTest('/link/', (self) => self.prepend('Winner: ')).toString()).toBe('foo bar');
 });
 
@@ -450,7 +437,6 @@ test('unless', () => {
     expect(new Stringable('unless').unless(1, (self, val) => self.append(val).append('true')).toString()).toBe(
         'unless',
     );
-
     expect(
         new Stringable('unless true ')
             .unless(
@@ -462,7 +448,6 @@ test('unless', () => {
     ).toBe('unless true fallbacks to default with value 1');
 
     expect(new Stringable('unless ').unless(0, (self, val) => self.append(val)).toString()).toBe('unless 0');
-
     expect(
         new Stringable('gets the value ')
             .unless(
