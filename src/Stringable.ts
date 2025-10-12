@@ -235,7 +235,7 @@ export class Stringable {
     /**
      * Determine if a given string matches a given pattern.
      */
-    public isMatch(pattern: string | string[]): boolean {
+    public isMatch(pattern: string | string[] | RegExp | RegExp[]): boolean {
         return Str.isMatch(pattern, this.value);
     }
 
@@ -544,7 +544,7 @@ export class Stringable {
     /**
      * Determine if the string matches the given pattern.
      */
-    public test(pattern: string | string[]): boolean {
+    public test(pattern: string | string[] | RegExp | RegExp[]): boolean {
         return this.isMatch(pattern);
     }
 
@@ -767,7 +767,7 @@ export class Stringable {
      * Execute the given callback if the string matches the given pattern.
      */
     public whenTest(
-        pattern: string,
+        pattern: string | RegExp,
         callback?: (self: Stringable, val: any) => Stringable,
         defaultCallback?: (self: Stringable, val: any) => Stringable,
     ): Stringable {

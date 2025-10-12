@@ -103,7 +103,9 @@ test('test', () => {
     const stringable = new Stringable('foo bar');
 
     expect(stringable.test('/bar/')).toBe(true);
+    expect(stringable.test(/bar/)).toBe(true);
     expect(stringable.test('/foo (.*)/')).toBe(true);
+    expect(stringable.test(/foo (.*)/)).toBe(true);
 });
 
 test('when', () => {
@@ -410,13 +412,35 @@ test('whenTest', () => {
     expect(
         new Stringable('foo bar')
             .whenTest(
+                /bar/,
+                (self) => self.prepend('Winner: '),
+                () => new Stringable('Try again'),
+            )
+            .toString(),
+    ).toBe('Winner: foo bar');
+
+    expect(
+        new Stringable('foo bar')
+            .whenTest(
                 '/link/',
                 (self) => self.prepend('Winner: '),
                 () => new Stringable('Try again'),
             )
             .toString(),
     ).toBe('Try again');
+
+    expect(
+        new Stringable('foo bar')
+            .whenTest(
+                /link/,
+                (self) => self.prepend('Winner: '),
+                () => new Stringable('Try again'),
+            )
+            .toString(),
+    ).toBe('Try again');
+
     expect(new Stringable('foo bar').whenTest('/link/', (self) => self.prepend('Winner: ')).toString()).toBe('foo bar');
+    expect(new Stringable('foo bar').whenTest(/link/, (self) => self.prepend('Winner: ')).toString()).toBe('foo bar');
 });
 
 test('unless', () => {

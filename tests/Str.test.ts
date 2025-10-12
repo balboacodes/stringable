@@ -465,19 +465,31 @@ test('isJson', () => {
 
 test('isMatch', () => {
     expect(Str.isMatch('/.*,.*!/', 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch(/.*,.*!/, 'Hello, Laravel!')).toBe(true);
     expect(Str.isMatch('/^.*$(.*)/', 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch(/^.*$(.*)/, 'Hello, Laravel!')).toBe(true);
     expect(Str.isMatch('/laravel/i', 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch(/laravel/i, 'Hello, Laravel!')).toBe(true);
     expect(Str.isMatch('/^(.*(.*(.*)))/', 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch(/^(.*(.*(.*)))/, 'Hello, Laravel!')).toBe(true);
 
     expect(Str.isMatch('/H.o/', 'Hello, Laravel!')).toBe(false);
+    expect(Str.isMatch(/H.o/, 'Hello, Laravel!')).toBe(false);
     expect(Str.isMatch('/^laravel!/i', 'Hello, Laravel!')).toBe(false);
+    expect(Str.isMatch(/^laravel!/i, 'Hello, Laravel!')).toBe(false);
     expect(Str.isMatch('/laravel!(.*)/', 'Hello, Laravel!')).toBe(false);
+    expect(Str.isMatch(/laravel!(.*)/, 'Hello, Laravel!')).toBe(false);
     expect(Str.isMatch('/^[a-zA-Z,!]+$/', 'Hello, Laravel!')).toBe(false);
+    expect(Str.isMatch(/^[a-zA-Z,!]+$/, 'Hello, Laravel!')).toBe(false);
 
     expect(Str.isMatch(['/.*,.*!/', '/H.o/'], 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch([/.*,.*!/, /H.o/], 'Hello, Laravel!')).toBe(true);
     expect(Str.isMatch(['/^laravel!/i', '/^.*$(.*)/'], 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch([/^laravel!/i, /^.*$(.*)/], 'Hello, Laravel!')).toBe(true);
     expect(Str.isMatch(['/laravel/i', '/laravel!(.*)/'], 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch([/laravel/i, /laravel!(.*)/], 'Hello, Laravel!')).toBe(true);
     expect(Str.isMatch(['/^[a-zA-Z,!]+$/', '/^(.*(.*(.*)))/'], 'Hello, Laravel!')).toBe(true);
+    expect(Str.isMatch([/^[a-zA-Z,!]+$/, /^(.*(.*(.*)))/], 'Hello, Laravel!')).toBe(true);
 });
 
 test('isUrl', () => {
@@ -593,16 +605,23 @@ test('mask', () => {
 
 test('match', () => {
     expect(Str.match('/bar/', 'foo bar')).toBe('bar');
+    expect(Str.match(/bar/, 'foo bar')).toBe('bar');
     expect(Str.match('/foo (.*)/', 'foo bar')).toBe('bar');
+    expect(Str.match(/foo (.*)/, 'foo bar')).toBe('bar');
     expect(Str.match('/nothing/', 'foo bar')).toBe('');
-    expect(Str.match('/pattern/', '')).toBe('');
+    expect(Str.match(/nothing/, 'foo bar')).toBe('');
+    expect(Str.match(/pattern/, '')).toBe('');
 });
 
 test('matchAll', () => {
     expect(Str.matchAll('/bar/', 'bar foo bar')).toEqual(['bar', 'bar']);
+    expect(Str.matchAll(/bar/, 'bar foo bar')).toEqual(['bar', 'bar']);
     expect(Str.matchAll('/f(\\w*)/', 'bar fun bar fly')).toEqual(['un', 'ly']);
+    expect(Str.matchAll(/f(\w*)/, 'bar fun bar fly')).toEqual(['un', 'ly']);
     expect(Str.matchAll('/nothing/', 'bar fun bar fly')).toEqual([]);
+    expect(Str.matchAll(/nothing/, 'bar fun bar fly')).toEqual([]);
     expect(Str.matchAll('/pattern/', '')).toEqual([]);
+    expect(Str.matchAll(/pattern/, '')).toEqual([]);
 });
 
 test('padBoth', () => {
@@ -762,19 +781,36 @@ test('replaceLast', () => {
 
 test('replaceMatches', () => {
     expect(Str.replaceMatches('/baz/', 'bar', 'foo baz bar')).toBe('foo bar bar');
+    expect(Str.replaceMatches(/baz/, 'bar', 'foo baz bar')).toBe('foo bar bar');
     expect(Str.replaceMatches('/404/', 'found', 'foo baz baz')).toBe('foo baz baz');
+    expect(Str.replaceMatches(/404/, 'found', 'foo baz baz')).toBe('foo baz baz');
     expect(Str.replaceMatches(['/bar/', '/baz/'], ['XXX', 'YYY'], 'foo bar baz')).toBe('foo XXX YYY');
+    expect(Str.replaceMatches([/bar/, /baz/], ['XXX', 'YYY'], 'foo bar baz')).toBe('foo XXX YYY');
 
     let result = Str.replaceMatches('/ba(.)/', (match) => 'ba' + match[1].toUpperCase(), 'foo baz bar');
+
+    expect(result).toBe('foo baZ baR');
+
+    result = Str.replaceMatches(/ba(.)/, (match) => 'ba' + match[1].toUpperCase(), 'foo baz bar');
 
     expect(result).toBe('foo baZ baR');
 
     result = Str.replaceMatches('/(\\d+)/', (match) => String(Number(match[1]) * 2), 'foo 123 bar 456');
 
     expect(result).toBe('foo 246 bar 912');
+
+    result = Str.replaceMatches(/(\d+)/, (match) => String(Number(match[1]) * 2), 'foo 123 bar 456');
+
+    expect(result).toBe('foo 246 bar 912');
+
     expect(Str.replaceMatches('/ba(.)/', 'ba$1', 'foo baz baz', 1)).toBe('foo baz baz');
+    expect(Str.replaceMatches(/ba(.)/, 'ba$1', 'foo baz baz', 1)).toBe('foo baz baz');
 
     result = Str.replaceMatches('/ba(.)/', (match) => 'ba' + match[1].toUpperCase(), 'foo baz baz bar', 1);
+
+    expect(result).toBe('foo baZ baz bar');
+
+    result = Str.replaceMatches(/ba(.)/, (match) => 'ba' + match[1].toUpperCase(), 'foo baz baz bar', 1);
 
     expect(result).toBe('foo baZ baz bar');
 });

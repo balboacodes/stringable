@@ -456,12 +456,12 @@ export class Str {
     /**
      * Determine if a given string matches a given pattern.
      */
-    public static isMatch(pattern: string | string[], value: string): boolean {
-        if (typeof pattern === 'string') {
-            pattern = [pattern];
-        }
+    public static isMatch(pattern: string | string[] | RegExp | RegExp[], value: string): boolean {
+        let patterns = typeof pattern === 'string' || pattern instanceof RegExp ? [pattern] : pattern;
 
-        for (let p of pattern) {
+        for (let p of patterns) {
+            p = String(p);
+
             if (preg_match(p, value)) {
                 return true;
             }
@@ -604,9 +604,9 @@ export class Str {
     /**
      * Get the string matching the given pattern.
      */
-    public static match(pattern: string, subject: string): string {
+    public static match(pattern: string | RegExp, subject: string): string {
         let matches: string[] = [];
-        preg_match(pattern, subject, matches);
+        preg_match(String(pattern), subject, matches);
 
         if (matches.length === 0) {
             return '';
@@ -618,9 +618,9 @@ export class Str {
     /**
      * Get the string matching the given pattern.
      */
-    public static matchAll(pattern: string, subject: string): any[] {
+    public static matchAll(pattern: string | RegExp, subject: string): any[] {
         let matches: any[] = [];
-        preg_match_all(pattern, subject, matches);
+        preg_match_all(String(pattern), subject, matches);
 
         if (empty(matches[0])) {
             return [];
@@ -839,11 +839,17 @@ export class Str {
      * Replace the patterns matching the given regular expression.
      */
     public static replaceMatches(
-        pattern: string | string[],
+        pattern: string | string[] | RegExp | RegExp[],
         replace: ((match: string[]) => string) | string | string[],
         subject: string | string[],
         limit: number = -1,
     ): string | string[] | null {
+        if (pattern instanceof RegExp) {
+            pattern = String(pattern);
+        } else if (Array.isArray(pattern)) {
+            pattern = pattern.map((p) => String(p));
+        }
+
         if (typeof replace === 'function') {
             return preg_replace_callback(pattern, replace, subject, limit);
         }
