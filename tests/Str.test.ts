@@ -1,6 +1,6 @@
 import { base64_encode } from '@balboacodes/php-utils';
 import { expect, test } from 'vitest';
-import { str, Str } from '../src/Str';
+import { Str } from '../src/Str';
 import { Stringable } from '../src/Stringable';
 
 test.each([
@@ -1124,11 +1124,4 @@ test('words', () => {
 test('wrap', () => {
     expect(Str.wrap('value', '"')).toBe('"value"');
     expect(Str.wrap('-bar-', 'foo', 'baz')).toBe('foo-bar-baz');
-});
-
-test('str', () => {
-    const string = new Stringable('foo');
-
-    expect(str(string.toString())).toBeInstanceOf(Stringable);
-    expect(str('foo').toString()).toBe(string.toString());
 });
