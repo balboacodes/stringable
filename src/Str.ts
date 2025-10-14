@@ -1150,7 +1150,3 @@ export class Str {
         }
     }
 }
-
-export function str(value?: string): Stringable {
-    return new Stringable(value);
-}
