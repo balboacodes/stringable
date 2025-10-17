@@ -1,7 +1,6 @@
 import { base64_encode } from '@balboacodes/php-utils';
 import { expect, test } from 'vitest';
 import { Str } from '../src/Str';
-import { Stringable } from '../src/Stringable';
 
 test.each([
     ['hannah', 'han', 'nah'],

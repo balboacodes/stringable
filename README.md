@@ -8,7 +8,7 @@ Stringable is a TypeScript port of [Laravel's](https://github.com/laravel/larave
 
 - Methods that require third-party packages like Markdown, UUID, Pluralizer, etc.
 - Methods that are not documented on Laravel's docs page
-- Methods that are Laravel-specific like: __, e, etc.
+- Methods that are Laravel-specific like: \_\_, e, etc.
 
 ## Installation
 
@@ -45,3 +45,7 @@ const slice = str('This is my name').after('This is ').title(); // 'My Name'
 ## Documentation
 
 Documentation for the methods can be found on Laravel's [Strings documentation](https://laravel.com/docs/12.x/strings) page. Just translate PHP's syntax to JS like shown above.
+
+## Related
+
+If you like this package and are looking for an equivalent for array helpers, check out the [Arrayable](https://github.com/balboacodes/arrayable) package.
