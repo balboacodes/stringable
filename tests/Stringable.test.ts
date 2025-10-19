@@ -86,7 +86,7 @@ test('scan', () => {
 test('split', () => {
     const chunks = new Stringable('foobarbaz').split(3);
 
-    expectTypeOf(chunks).toEqualTypeOf<string[]>();
+    expectTypeOf(chunks).toEqualTypeOf<string[] | (string | number)[][]>();
     expect(chunks).toEqual(['foo', 'bar', 'baz']);
 });
 

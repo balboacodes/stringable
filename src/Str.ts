@@ -10,13 +10,13 @@ export class Str {
      */
     // prettier-ignore
     public static readonly INVISIBLE_CHARACTERS = [
-      '\u0009','\u0020','\u00A0','\u00AD','\u034F','\u061C','\u115F','\u1160','\u17B4','\u17B5','\u180E','\u2000','\u2001','\u2002','\u2003','\u2004','\u2005','\u2006','\u2007','\u2008','\u2009','\u200A','\u200B','\u200C','\u200D','\u200E','\u200F','\u202F','\u205F','\u2060','\u2061','\u2062','\u2063','\u2064','\u2065','\u206A','\u206B','\u206C','\u206D','\u206E','\u206F','\u3000','\u2800','\u3164','\uFEFF','\uFFA0','\uD834\uDD59','\uD834\uDD73','\uD834\uDD74','\uD834\uDD75','\uD834\uDD76','\uD834\uDD77','\uD834\uDD78','\uD834\uDD79','\uD834\uDD7A','\uDB40\uDC20',
+      '\u0009', '\u0020', '\u00A0', '\u00AD', '\u034F', '\u061C', '\u115F', '\u1160', '\u17B4', '\u17B5', '\u180E', '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009', '\u200A', '\u200B', '\u200C', '\u200D', '\u200E', '\u200F', '\u202F', '\u205F', '\u2060', '\u2061', '\u2062', '\u2063', '\u2064', '\u2065', '\u206A', '\u206B', '\u206C', '\u206D', '\u206E', '\u206F', '\u3000', '\u2800', '\u3164', '\uFEFF', '\uFFA0', '\uD834\uDD59', '\uD834\uDD73', '\uD834\uDD74', '\uD834\uDD75', '\uD834\uDD76', '\uD834\uDD77', '\uD834\uDD78', '\uD834\uDD79', '\uD834\uDD7A', '\uDB40\uDC20',
     ];
 
     /**
      * The cache of camel-cased words.
      */
-    protected static camelCache: { [key: string]: string } = {};
+    protected static camelCache: Record<string, string> = {};
 
     /**
      * The callback that should be used to generate random strings.
@@ -26,12 +26,12 @@ export class Str {
     /**
      * The cache of snake-cased words.
      */
-    protected static snakeCache: { [key: string]: { [key: string]: string } } = {};
+    protected static snakeCache: Record<string, Record<string, string>> = {};
 
     /**
      * The cache of studly-cased words.
      */
-    protected static studlyCache: { [key: string]: string } = {};
+    protected static studlyCache: Record<string, string> = {};
 
     /**
      * Return the remainder of a string after the first occurrence of a given value.
@@ -60,7 +60,7 @@ export class Str {
     /**
      * Convert the given string to APA-style title case.
      *
-     * See: https://apastyle.apa.org/style-grammar-guidelines/capitalization/title-case
+     * @see https://apastyle.apa.org/style-grammar-guidelines/capitalization/title-case
      */
     public static apa(value: string): string {
         if (trim(value) === '') {
@@ -69,14 +69,14 @@ export class Str {
 
         // prettier-ignore
         const minorWords = [
-          'and','as','but','for','if','nor','or','so','yet','a','an','the','at','by','in','of','off','on','per','to','up','via','et','ou','un','une','la','le','les','de','du','des','par','à',
+          'and', 'as', 'but', 'for', 'if', 'nor', 'or', 'so', 'yet', 'a', 'an', 'the', 'at', 'by', 'in', 'of', 'off', 'on', 'per', 'to', 'up', 'via', 'et', 'ou', 'un', 'une', 'la', 'le', 'les', 'de', 'du', 'des', 'par', 'à',
         ];
 
         const endPunctuation = ['.', '!', '?', ':', '—', ','];
 
         let words = mb_split('\\s+', value);
         words = words ? words : [];
-        const wordCount = count(words ? words : []);
+        const wordCount = count(words);
 
         for (let i = 0; i < wordCount; i++) {
             const lowercaseWord = mb_strtolower(words[i]);
@@ -84,11 +84,13 @@ export class Str {
             if (str_contains(lowercaseWord, '-')) {
                 let hyphenatedWords = explode('-', lowercaseWord);
 
-                hyphenatedWords = array_map((part: string) => {
-                    return in_array(part, minorWords) && mb_strlen(part) <= 3
-                        ? part
-                        : mb_strtoupper(mb_substr(part, 0, 1)) + mb_substr(part, 1);
-                }, hyphenatedWords);
+                hyphenatedWords = array_map(
+                    (part) =>
+                        in_array(part, minorWords) && mb_strlen(part) <= 3
+                            ? part
+                            : mb_strtoupper(mb_substr(part, 0, 1)) + mb_substr(part, 1),
+                    hyphenatedWords,
+                );
 
                 words[i] = implode('-', hyphenatedWords);
             } else {
@@ -104,7 +106,7 @@ export class Str {
             }
         }
 
-        return implode(' ', words ? words : []);
+        return implode(' ', words);
     }
 
     /**
@@ -264,7 +266,7 @@ export class Str {
     /**
      * Replace consecutive instances of a given character with a single character in the given string.
      */
-    public static deduplicate(string: string, characters: string | string[] = ' '): string | string[] | null {
+    public static deduplicate(string: string, characters: string | string[] = ' '): string | null {
         if (typeof characters === 'string') {
             return preg_replace('/' + preg_quote(characters, '/') + '+/gu', characters, string);
         }
@@ -274,7 +276,7 @@ export class Str {
             (carry, character) => {
                 const result = preg_replace('/' + preg_quote(character, '/') + '+/gu', character, carry);
 
-                return !result ? '' : result.toString();
+                return result ? result : '';
             },
             string,
         );
@@ -393,12 +395,12 @@ export class Str {
             let split = Str.ucsplit(implode('_', parts));
             split = split ? split : [];
 
-            parts = array_map((s: string) => Str.title(s), split);
+            parts = array_map((s: string) => Str.title(s), split as any);
         }
 
         const collapsed = Str.replace(['-', '_', ' '], '_', implode('_', parts));
 
-        return implode(' ', array_filter(explode('_', collapsed.toString())));
+        return implode(' ', array_filter(explode('_', collapsed)));
     }
 
     /**
@@ -460,9 +462,7 @@ export class Str {
         let patterns = typeof pattern === 'string' || pattern instanceof RegExp ? [pattern] : pattern;
 
         for (let p of patterns) {
-            p = String(p);
-
-            if (preg_match(p, value)) {
+            if (preg_match(String(p), value)) {
                 return true;
             }
         }
@@ -494,7 +494,7 @@ export class Str {
             `(\\/[^\\s]*)?$/` + // path
             'i';
 
-        return !!preg_match(str_replace('LARAVEL_PROTOCOLS', protocolList, pattern).toString(), value);
+        return preg_match(str_replace('LARAVEL_PROTOCOLS', protocolList, pattern), value);
     }
 
     /**
@@ -536,7 +536,7 @@ export class Str {
         }
 
         const replaced = preg_replace('/[\n\r]+/', ' ', strip_tags(value));
-        value = trim(replaced?.toString() ?? '');
+        value = trim(replaced ?? '');
 
         const trimmed = rtrim(mb_strimwidth(value, 0, limit, ''));
 
@@ -562,11 +562,8 @@ export class Str {
             const ltrimDefaultCharacters = ' \n\r\t\v\0';
 
             return (
-                preg_replace(
-                    '~^[\\s' + Str.INVISIBLE_CHARACTERS + ltrimDefaultCharacters + ']+~u',
-                    '',
-                    value,
-                )?.toString() ?? ltrim(value)
+                preg_replace('~^[\\s' + Str.INVISIBLE_CHARACTERS + ltrimDefaultCharacters + ']+~u', '', value) ??
+                ltrim(value)
             );
         }
 
@@ -618,8 +615,8 @@ export class Str {
     /**
      * Get the string matching the given pattern.
      */
-    public static matchAll(pattern: string | RegExp, subject: string): any[] {
-        let matches: any[] = [];
+    public static matchAll(pattern: string | RegExp, subject: string): string[] {
+        let matches: string[][] = [];
         preg_match_all(String(pattern), subject, matches);
 
         if (empty(matches[0])) {
@@ -676,7 +673,7 @@ export class Str {
                     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                 ]
                 : null,
-            numbers: numbers ? ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] : null,
+            numbers: numbers ? ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] : null,
             symbols: symbols
                 ? [
                     '~', '!', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '.', ';', ',', '<', '>', '?', '/', '\\', '{', '}', '[', ']', '|', ':', ';',
@@ -729,12 +726,10 @@ export class Str {
 
                 while (strlen(string) < length) {
                     const size = length - strlen(string);
-
                     const bytesSize = ceil(size / 3) * 3;
-
                     const bytes = random_bytes(bytesSize);
 
-                    string += substr(str_replace(['/', '+', '='], '', btoa(bytes)).toString(), 0, size);
+                    string += substr(str_replace(['/', '+', '='], '', btoa(bytes)), 0, size);
                 }
 
                 return string;
@@ -745,10 +740,14 @@ export class Str {
     /**
      * Remove any occurrence of the given string in the subject.
      */
-    public static remove(search: string | string[], subject: string | string[], caseSensitive: boolean = true): string {
-        return caseSensitive
-            ? str_replace(search, '', subject).toString()
-            : str_ireplace(search, '', subject).toString();
+    public static remove(search: string | string[], subject: string, caseSensitive?: boolean): string;
+    public static remove(search: string | string[], subject: string[], caseSensitive?: boolean): string[];
+    public static remove(
+        search: string | string[],
+        subject: string | string[],
+        caseSensitive: boolean = true,
+    ): string | string[] {
+        return caseSensitive ? str_replace(search, '', subject as any) : str_ireplace(search, '', subject as any);
     }
 
     /**
@@ -761,13 +760,27 @@ export class Str {
     /**
      * Replace the given value in the given string.
      */
-    public static replace<T extends string | string[]>(
+    public static replace(
         search: string | string[],
         replace: string | string[],
-        subject: T,
+        subject: string,
+        caseSensitive?: boolean,
+    ): string;
+    public static replace(
+        search: string | string[],
+        replace: string | string[],
+        subject: string[],
+        caseSensitive?: boolean,
+    ): string[];
+    public static replace(
+        search: string | string[],
+        replace: string | string[],
+        subject: string | string[],
         caseSensitive: boolean = true,
-    ): T extends string ? string : string[] {
-        return caseSensitive ? str_replace(search, replace, subject) : str_ireplace(search, replace, subject);
+    ): string | string[] {
+        return caseSensitive
+            ? str_replace(search, replace, subject as any)
+            : str_ireplace(search, replace, subject as any);
     }
 
     /**
@@ -812,7 +825,7 @@ export class Str {
         const position = strpos(subject, search);
 
         if (position !== false) {
-            return substr_replace(subject, replace, position, mb_strlen(search)).toString();
+            return substr_replace(subject, replace, position, mb_strlen(search));
         }
 
         return subject;
@@ -829,7 +842,7 @@ export class Str {
         const position = mb_strrpos(subject, search);
 
         if (position !== false) {
-            return substr_replace(subject, replace, position, mb_strlen(search)).toString();
+            return substr_replace(subject, replace, position, mb_strlen(search));
         }
 
         return subject;
@@ -851,10 +864,10 @@ export class Str {
         }
 
         if (typeof replace === 'function') {
-            return preg_replace_callback(pattern, replace, subject, limit);
+            return preg_replace_callback(pattern, replace, subject as any, limit);
         }
 
-        return preg_replace(pattern, replace, subject, limit);
+        return preg_replace(pattern, replace, subject as any, limit);
     }
 
     /**
@@ -887,11 +900,8 @@ export class Str {
             const rtrimDefaultCharacters = ' \n\r\t\v\0';
 
             return (
-                preg_replace(
-                    '~[\\s' + Str.INVISIBLE_CHARACTERS + rtrimDefaultCharacters + ']+$~u',
-                    '',
-                    value,
-                )?.toString() ?? rtrim(value)
+                preg_replace('~[\\s' + Str.INVISIBLE_CHARACTERS + rtrimDefaultCharacters + ']+$~u', '', value) ??
+                rtrim(value)
             );
         }
 
@@ -909,9 +919,8 @@ export class Str {
         }
 
         if (!ctype_lower(value)) {
-            value = preg_replace('/\\s+/u', '', ucwords(value))?.toString() ?? '';
-
-            value = Str.lower(preg_replace('/(.)(?=[A-Z])/u', '$1' + delimiter, value)?.toString() ?? '');
+            value = preg_replace('/\\s+/u', '', ucwords(value)) ?? '';
+            value = Str.lower(preg_replace('/(.)(?=[A-Z])/u', '$1' + delimiter, value) ?? '');
         }
 
         if (!Str.snakeCache[key]) {
@@ -927,7 +936,7 @@ export class Str {
      * Remove all "extra" blank space from the given string.
      */
     public static squish(value: string): string {
-        return preg_replace('~(\\s|\u3164|\u1160)+~u', ' ', Str.trim(value))?.toString() ?? '';
+        return preg_replace('~(\\s|\u3164|\u1160)+~u', ' ', Str.trim(value)) ?? '';
     }
 
     /**
@@ -966,7 +975,7 @@ export class Str {
             return Str.studlyCache[key];
         }
 
-        const words = mb_split('\\s+', Str.replace(['-', '_'], ' ', value));
+        const words = mb_split('\\s+', Str.replace(['-', '_'], ' ', value) as any);
 
         if (!words) {
             return '';
@@ -981,7 +990,7 @@ export class Str {
      * Returns the portion of the string specified by the start and length parameters.
      */
     public static substr(string: string, start: number, length?: number): string {
-        return mb_substr(string, start, length) || '';
+        return mb_substr(string, start, length);
     }
 
     /**
@@ -989,10 +998,10 @@ export class Str {
      */
     public static substrCount(haystack: string, needle: string, offset: number = 0, length?: number): number {
         if (length !== undefined) {
-            return substr_count(haystack, needle, offset, length) || 0;
+            return substr_count(haystack, needle, offset, length);
         }
 
-        return substr_count(haystack, needle, offset) || 0;
+        return substr_count(haystack, needle, offset);
     }
 
     /**
@@ -1003,13 +1012,13 @@ export class Str {
             length = strlen(string);
         }
 
-        return substr_replace(string, replace, offset, length).toString();
+        return substr_replace(string, replace, offset, length);
     }
 
     /**
      * Swap multiple keywords in a string with other keywords.
      */
-    public static swap(map: { [key: string]: string }, subject: string): string {
+    public static swap(map: Record<string, string>, subject: string): string {
         return strtr(subject, map);
     }
 
@@ -1028,7 +1037,7 @@ export class Str {
      * Convert the given string to proper case.
      */
     public static title(value: string): string {
-        return mb_convert_case(value, MB_CASE_TITLE, 'UTF-8') || '';
+        return mb_convert_case(value, MB_CASE_TITLE);
     }
 
     /**
@@ -1056,7 +1065,7 @@ export class Str {
                         ']+$~u',
                     '',
                     value,
-                )?.toString() ?? trim(value)
+                ) ?? trim(value)
             );
         }
 
@@ -1073,7 +1082,7 @@ export class Str {
     /**
      * Split a string into pieces by uppercase characters.
      */
-    public static ucsplit(string: string): string[] {
+    public static ucsplit(string: string): (string | number)[][] | string[] {
         return preg_split('/(?=\\p{Lu})/u', string, -1, [PREG_SPLIT_NO_EMPTY]);
     }
 

@@ -463,7 +463,11 @@ export class Stringable {
     /**
      * Split a string using a regular expression or by length.
      */
-    public split(pattern: string | number, limit: number = -1, flags: (0 | 1 | 2 | 4)[] = [0]): string[] {
+    public split(
+        pattern: string | number,
+        limit: number = -1,
+        flags: (0 | 1 | 2 | 4)[] = [0],
+    ): (string | number)[][] | string[] {
         if (filter_var(pattern, FILTER_VALIDATE_INT) !== false) {
             return mb_str_split(this.value, pattern as number);
         }
