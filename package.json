@@ -40,6 +40,6 @@
         "vitest": "^3.2.4"
     },
     "dependencies": {
-        "@balboacodes/php-utils": "^0.3.0"
+        "@balboacodes/php-utils": "^0.3.1"
     }
 }
