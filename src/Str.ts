@@ -37,7 +37,7 @@ export class Str {
      * Return the remainder of a string after the first occurrence of a given value.
      */
     public static after(subject: string, search: string): string {
-        return search === '' ? subject : array_reverse(explode(search, subject, 2))[0];
+        return search === '' ? subject : (array_reverse(explode(search, subject, 2)) as any[])[0];
     }
 
     /**
@@ -90,7 +90,7 @@ export class Str {
                             ? part
                             : mb_strtoupper(mb_substr(part, 0, 1)) + mb_substr(part, 1),
                     hyphenatedWords,
-                );
+                ) as string[];
 
                 words[i] = implode('-', hyphenatedWords);
             } else {
@@ -268,7 +268,7 @@ export class Str {
      */
     public static deduplicate(string: string, characters: string | string[] = ' '): string | null {
         if (typeof characters === 'string') {
-            return preg_replace('/' + preg_quote(characters, '/') + '+/gu', characters, string);
+            return preg_replace('/' + preg_quote(characters, '/') + '+/gu', characters, string) as string;
         }
 
         return array_reduce(
@@ -390,12 +390,12 @@ export class Str {
         parts = parts ? parts : [];
 
         if (count(parts) > 1) {
-            parts = array_map((s: string) => Str.title(s), parts);
+            parts = array_map((s: string) => Str.title(s), parts) as string[];
         } else {
             let split = Str.ucsplit(implode('_', parts));
             split = split ? split : [];
 
-            parts = array_map((s: string) => Str.title(s), split as any);
+            parts = array_map((s: string) => Str.title(s), split as any) as string[];
         }
 
         const collapsed = Str.replace(['-', '_', ' '], '_', implode('_', parts));
@@ -428,7 +428,7 @@ export class Str {
             // Asterisks are translated into zero-or-more regular expression wildcards
             // to make it convenient to check if the strings starts with the given
             // pattern such as "library/*", making any string check convenient.
-            p = str_replace('\\*', '.*', p);
+            p = str_replace('\\*', '.*', p) as string;
 
             if (preg_match('#^' + p + '$#' + (ignoreCase ? 'isu' : 'su'), value)) {
                 return true;
@@ -494,7 +494,7 @@ export class Str {
             `(\\/[^\\s]*)?$/` + // path
             'i';
 
-        return preg_match(str_replace('LARAVEL_PROTOCOLS', protocolList, pattern), value);
+        return preg_match(str_replace('LARAVEL_PROTOCOLS', protocolList, pattern) as string, value);
     }
 
     /**
@@ -536,7 +536,7 @@ export class Str {
         }
 
         const replaced = preg_replace('/[\n\r]+/', ' ', strip_tags(value));
-        value = trim(replaced ?? '');
+        value = trim((replaced ?? '') as string);
 
         const trimmed = rtrim(mb_strimwidth(value, 0, limit, ''));
 
@@ -561,10 +561,8 @@ export class Str {
         if (charlist === undefined) {
             const ltrimDefaultCharacters = ' \n\r\t\v\0';
 
-            return (
-                preg_replace('~^[\\s' + Str.INVISIBLE_CHARACTERS + ltrimDefaultCharacters + ']+~u', '', value) ??
-                ltrim(value)
-            );
+            return (preg_replace('~^[\\s' + Str.INVISIBLE_CHARACTERS + ltrimDefaultCharacters + ']+~u', '', value) ??
+                ltrim(value)) as string;
         }
 
         return ltrim(value, charlist);
@@ -729,7 +727,7 @@ export class Str {
                     const bytesSize = ceil(size / 3) * 3;
                     const bytes = random_bytes(bytesSize);
 
-                    string += substr(str_replace(['/', '+', '='], '', btoa(bytes)), 0, size);
+                    string += substr(str_replace(['/', '+', '='], '', btoa(bytes)) as string, 0, size);
                 }
 
                 return string;
@@ -811,7 +809,7 @@ export class Str {
         const position = strpos(subject, search);
 
         if (position !== false) {
-            return substr_replace(subject, replace, position, mb_strlen(search));
+            return substr_replace(subject, replace, position, mb_strlen(search)) as string;
         }
 
         return subject;
@@ -828,7 +826,7 @@ export class Str {
         const position = mb_strrpos(subject, search);
 
         if (position !== false) {
-            return substr_replace(subject, replace, position, mb_strlen(search));
+            return substr_replace(subject, replace, position, mb_strlen(search)) as string;
         }
 
         return subject;
@@ -885,10 +883,8 @@ export class Str {
         if (charlist === undefined) {
             const rtrimDefaultCharacters = ' \n\r\t\v\0';
 
-            return (
-                preg_replace('~[\\s' + Str.INVISIBLE_CHARACTERS + rtrimDefaultCharacters + ']+$~u', '', value) ??
-                rtrim(value)
-            );
+            return (preg_replace('~[\\s' + Str.INVISIBLE_CHARACTERS + rtrimDefaultCharacters + ']+$~u', '', value) ??
+                rtrim(value)) as string;
         }
 
         return rtrim(value, charlist);
@@ -905,8 +901,8 @@ export class Str {
         }
 
         if (!ctype_lower(value)) {
-            value = preg_replace('/\\s+/u', '', ucwords(value)) ?? '';
-            value = Str.lower(preg_replace('/(.)(?=[A-Z])/u', '$1' + delimiter, value) ?? '');
+            value = (preg_replace('/\\s+/u', '', ucwords(value)) ?? '') as string;
+            value = Str.lower((preg_replace('/(.)(?=[A-Z])/u', '$1' + delimiter, value) ?? '') as string);
         }
 
         if (!Str.snakeCache[key]) {
@@ -922,7 +918,7 @@ export class Str {
      * Remove all "extra" blank space from the given string.
      */
     public static squish(value: string): string {
-        return preg_replace('~(\\s|\u3164|\u1160)+~u', ' ', Str.trim(value)) ?? '';
+        return (preg_replace('~(\\s|\u3164|\u1160)+~u', ' ', Str.trim(value)) ?? '') as string;
     }
 
     /**
@@ -998,7 +994,7 @@ export class Str {
             length = strlen(string);
         }
 
-        return substr_replace(string, replace, offset, length);
+        return substr_replace(string, replace, offset, length) as string;
     }
 
     /**
@@ -1040,19 +1036,17 @@ export class Str {
         if (charlist === undefined) {
             const trimDefaultCharacters = ' \n\r\t\v\0';
 
-            return (
-                preg_replace(
-                    '~^[\\s' +
-                        Str.INVISIBLE_CHARACTERS +
-                        trimDefaultCharacters +
-                        ']+|[\\s' +
-                        Str.INVISIBLE_CHARACTERS +
-                        trimDefaultCharacters +
-                        ']+$~u',
-                    '',
-                    value,
-                ) ?? trim(value)
-            );
+            return (preg_replace(
+                '~^[\\s' +
+                    Str.INVISIBLE_CHARACTERS +
+                    trimDefaultCharacters +
+                    ']+|[\\s' +
+                    Str.INVISIBLE_CHARACTERS +
+                    trimDefaultCharacters +
+                    ']+$~u',
+                '',
+                value,
+            ) ?? trim(value)) as string;
         }
 
         return trim(value, charlist);
@@ -1098,7 +1092,7 @@ export class Str {
      * Get the number of words a string contains.
      */
     public static wordCount(string: string, characters?: string): number {
-        return str_word_count(string, 0, characters);
+        return str_word_count(string, 0, characters) as number;
     }
 
     /**
