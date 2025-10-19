@@ -369,7 +369,7 @@ export class Stringable {
      * Remove any occurrence of the given string in the subject.
      */
     public remove(search: string | string[], caseSensitive: boolean = true): Stringable {
-        return new Stringable(Str.remove(search, this.value, caseSensitive));
+        return new Stringable(Str.remove(search, this.value, caseSensitive) as any);
     }
 
     /**

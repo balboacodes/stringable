@@ -400,7 +400,7 @@ export class Str {
 
         const collapsed = Str.replace(['-', '_', ' '], '_', implode('_', parts));
 
-        return implode(' ', array_filter(explode('_', collapsed)));
+        return implode(' ', array_filter(explode('_', collapsed as any)));
     }
 
     /**
@@ -740,8 +740,6 @@ export class Str {
     /**
      * Remove any occurrence of the given string in the subject.
      */
-    public static remove(search: string | string[], subject: string, caseSensitive?: boolean): string;
-    public static remove(search: string | string[], subject: string[], caseSensitive?: boolean): string[];
     public static remove(
         search: string | string[],
         subject: string | string[],
@@ -760,18 +758,6 @@ export class Str {
     /**
      * Replace the given value in the given string.
      */
-    public static replace(
-        search: string | string[],
-        replace: string | string[],
-        subject: string,
-        caseSensitive?: boolean,
-    ): string;
-    public static replace(
-        search: string | string[],
-        replace: string | string[],
-        subject: string[],
-        caseSensitive?: boolean,
-    ): string[];
     public static replace(
         search: string | string[],
         replace: string | string[],

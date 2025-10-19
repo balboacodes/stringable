@@ -372,15 +372,15 @@ test('flushCache', () => {
 
     Str.flushCache();
 
-    expect((Str as any)[snakeCacheProp]).toEqual({});
+    expect(Str[snakeCacheProp]).toEqual({});
 
     Str.snake('Taylor Otwell');
 
-    expect((Str as any)[snakeCacheProp]).not.toEqual({});
+    expect(Str[snakeCacheProp]).not.toEqual({});
 
     Str.flushCache();
 
-    expect((Str as any)[snakeCacheProp]).toEqual({});
+    expect(Str[snakeCacheProp]).toEqual({});
 });
 
 test('fromBase64', () => {
