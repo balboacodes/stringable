@@ -48,4 +48,4 @@ Documentation for the methods can be found on Laravel's [Strings documentation](
 
 ## Related
 
-If you like this package and are looking for an equivalent for array helpers, check out the [Arrayable](https://github.com/balboacodes/arrayable) package.
+If you like this package and are looking for array helpers, check out the [Arrayable](https://github.com/balboacodes/arrayable) package.
