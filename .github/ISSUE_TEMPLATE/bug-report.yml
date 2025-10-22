@@ -6,9 +6,9 @@ body:
           value: 'Please read our [contribution guide](https://github.com/balboacodes/stringable/blob/main/.github/CONTRIBUTING.md) before submitting bug reports.'
     - type: input
       attributes:
-          label: Stringable version
-          description: Provide the Stringable version that you are using.
-          placeholder: 1.0.0
+          label: Version
+          description: Provide the version that you are using.
+          placeholder: 0.1.0
       validations:
           required: true
     - type: input

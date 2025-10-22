@@ -12,6 +12,5 @@ Contributions are welcome and are accepted via pull requests. Please review the 
 
 ## Guidelines
 
-- Only submit pull requests for feature parity with Laravel's string helpers. If you think a feature outside of what Laravel offers would benefit the community, [create a discussion](https://github.com/balboacodes/stringable/discussions) about it first.
 - Create passing tests for new features and make sure existing tests are passing by running `npm run test`
 - Ensure code is formatted by running `npm run format`
