@@ -1,7 +1,7 @@
 import { Stringable } from './Stringable';
 // prettier-ignore
 import {
-    array_filter, array_map, array_reduce, array_reverse, array_shift, base64_decode, base64_encode, ceil, count, ctype_lower, empty, explode, implode, in_array, isset, lcfirst, ltrim, max, MB_CASE_TITLE, mb_convert_case, mb_split, mb_str_pad, mb_str_split, mb_strimwidth, mb_strlen, mb_strpos, mb_strrpos, mb_strtolower, mb_strtoupper, mb_strwidth, mb_substr, preg_match, preg_match_all, preg_quote, preg_replace, preg_replace_callback, preg_split, PREG_SPLIT_NO_EMPTY, random_bytes, random_int, rtrim, str_contains, str_ends_with, str_ireplace, STR_PAD_BOTH, STR_PAD_LEFT, STR_PAD_RIGHT, str_repeat, str_replace, str_starts_with, str_word_count, strip_tags, strlen, strpos, strrpos, strstr, strtr, substr, substr_count, substr_replace, trim, ucwords, wordwrap,
+    array_filter, array_map, array_reduce, array_reverse, array_shift, base64_decode, base64_encode, count, ctype_lower, empty, explode, in_array, isset, lcfirst, ltrim, max, MB_CASE_TITLE, mb_convert_case, mb_split, mb_str_pad, mb_str_split, mb_strimwidth, mb_strlen, mb_strpos, mb_strrpos, mb_strwidth, mb_substr, preg_match, preg_match_all, preg_quote, preg_replace, preg_replace_callback, preg_split, PREG_SPLIT_NO_EMPTY, random_bytes, random_int, rtrim, str_ireplace, STR_PAD_BOTH, STR_PAD_LEFT, STR_PAD_RIGHT, str_replace, str_word_count, strip_tags, strlen, strpos, strrpos, strstr, strtr, substr, substr_count, substr_replace, trim, ucwords, wordwrap,
 } from '@balboacodes/php-utils';
 
 export class Str {
@@ -63,7 +63,7 @@ export class Str {
      * @see https://apastyle.apa.org/style-grammar-guidelines/capitalization/title-case
      */
     public static apa(value: string): string {
-        if (trim(value) === '') {
+        if (value.trim() === '') {
             return value;
         }
 
@@ -79,20 +79,20 @@ export class Str {
         const wordCount = count(words);
 
         for (let i = 0; i < wordCount; i++) {
-            const lowercaseWord = mb_strtolower(words[i]);
+            const lowercaseWord = words[i].toLocaleLowerCase();
 
-            if (str_contains(lowercaseWord, '-')) {
+            if (lowercaseWord.includes('-')) {
                 let hyphenatedWords = explode('-', lowercaseWord);
 
                 hyphenatedWords = array_map(
                     (part) =>
                         in_array(part, minorWords) && mb_strlen(part) <= 3
                             ? part
-                            : mb_strtoupper(mb_substr(part, 0, 1)) + mb_substr(part, 1),
+                            : mb_substr(part, 0, 1).toLocaleUpperCase() + mb_substr(part, 1),
                     hyphenatedWords,
                 ) as string[];
 
-                words[i] = implode('-', hyphenatedWords);
+                words[i] = hyphenatedWords.join('-');
             } else {
                 if (
                     in_array(lowercaseWord, minorWords) &&
@@ -101,12 +101,12 @@ export class Str {
                 ) {
                     words[i] = lowercaseWord;
                 } else {
-                    words[i] = mb_strtoupper(mb_substr(lowercaseWord, 0, 1)) + mb_substr(lowercaseWord, 1);
+                    words[i] = mb_substr(lowercaseWord, 0, 1).toLocaleUpperCase() + mb_substr(lowercaseWord, 1);
                 }
             }
         }
 
-        return implode(' ', words);
+        return words.join(' ');
     }
 
     /**
@@ -190,7 +190,7 @@ export class Str {
      */
     public static chopEnd(subject: string, needle: string | string[]): string {
         for (const n of Array.isArray(needle) ? needle : [needle]) {
-            if (str_ends_with(subject, n)) {
+            if (subject.endsWith(n)) {
                 return substr(subject, 0, -strlen(n));
             }
         }
@@ -203,7 +203,7 @@ export class Str {
      */
     public static chopStart(subject: string, needle: string | string[]): string {
         for (const n of Array.isArray(needle) ? needle : [needle]) {
-            if (str_starts_with(subject, n)) {
+            if (subject.startsWith(n)) {
                 return substr(subject, strlen(n));
             }
         }
@@ -216,7 +216,7 @@ export class Str {
      */
     public static contains(haystack: string, needles: string | string[], ignoreCase: boolean = false): boolean {
         if (ignoreCase) {
-            haystack = mb_strtolower(haystack);
+            haystack = haystack.toLocaleLowerCase();
         }
 
         if (typeof needles === 'string') {
@@ -225,10 +225,10 @@ export class Str {
 
         for (let needle of needles) {
             if (ignoreCase) {
-                needle = mb_strtolower(needle);
+                needle = needle.toLocaleLowerCase();
             }
 
-            if (needle !== '' && str_contains(haystack, needle)) {
+            if (needle !== '' && haystack.includes(needle)) {
                 return true;
             }
         }
@@ -312,7 +312,7 @@ export class Str {
         }
 
         for (const needle of needles) {
-            if (needle !== '' && str_ends_with(haystack, needle)) {
+            if (needle !== '' && haystack.endsWith(needle)) {
                 return true;
             }
         }
@@ -338,7 +338,7 @@ export class Str {
             return null;
         }
 
-        let start: string | Stringable = ltrim(matches[1]);
+        let start: string | Stringable = matches[1].trimStart();
         start = Str.of(mb_substr(start, max(mb_strlen(start) - radius, 0), radius))
             .ltrim()
             .unless(
@@ -346,7 +346,7 @@ export class Str {
                 (startWithRadius: Stringable) => startWithRadius.prepend(omission),
             );
 
-        let end: string | Stringable = rtrim(matches[3]);
+        let end: string | Stringable = matches[3].trimEnd();
         end = Str.of(mb_substr(end, 0, radius))
             .rtrim()
             .unless(
@@ -392,15 +392,15 @@ export class Str {
         if (count(parts) > 1) {
             parts = array_map((s: string) => Str.title(s), parts) as string[];
         } else {
-            let split = Str.ucsplit(implode('_', parts));
+            let split = Str.ucsplit(parts.join('_'));
             split = split ? split : [];
 
             parts = array_map((s: string) => Str.title(s), split as any) as string[];
         }
 
-        const collapsed = Str.replace(['-', '_', ' '], '_', implode('_', parts));
+        const collapsed = Str.replace(['-', '_', ' '], '_', parts.join('_'));
 
-        return implode(' ', array_filter(explode('_', collapsed as any)));
+        return array_filter(explode('_', collapsed as string)).join(' ');
     }
 
     /**
@@ -419,7 +419,7 @@ export class Str {
                 return true;
             }
 
-            if (ignoreCase && mb_strtolower(p) === mb_strtolower(value)) {
+            if (ignoreCase && p.toLocaleLowerCase() === value.toLocaleLowerCase()) {
                 return true;
             }
 
@@ -481,7 +481,7 @@ export class Str {
         const protocolList =
             protocols.length === 0
                 ? 'aaa|aaas|about|acap|acct|acd|acr|adiumxtra|adt|afp|afs|aim|amss|android|appdata|apt|ark|attachment|aw|barion|beshare|bitcoin|bitcoincash|blob|bolo|browserext|calculator|callto|cap|cast|casts|chrome|chrome-extension|cid|coap|coap\\+tcp|coap\\+ws|coaps|coaps\\+tcp|coaps\\+ws|com-eventbrite-attendee|content|conti|crid|cvs|dab|data|dav|diaspora|dict|did|dis|dlna-playcontainer|dlna-playsingle|dns|dntp|dpp|drm|drop|dtn|dvb|ed2k|elsi|example|facetime|fax|feed|feedready|file|filesystem|finger|first-run-pen-experience|fish|fm|ftp|fuchsia-pkg|geo|gg|git|gizmoproject|go|gopher|graph|gtalk|h323|ham|hcap|hcp|http|https|hxxp|hxxps|hydrazone|iax|icap|icon|im|imap|info|iotdisco|ipn|ipp|ipps|irc|irc6|ircs|iris|iris\\.beep|iris\\.lwz|iris\\.xpc|iris\\.xpcs|isostore|itms|jabber|jar|jms|keyparc|lastfm|ldap|ldaps|leaptofrogans|lorawan|lvlt|magnet|mailserver|mailto|maps|market|message|mid|mms|modem|mongodb|moz|ms-access|ms-browser-extension|ms-calculator|ms-drive-to|ms-enrollment|ms-excel|ms-eyecontrolspeech|ms-gamebarservices|ms-gamingoverlay|ms-getoffice|ms-help|ms-infopath|ms-inputapp|ms-lockscreencomponent-config|ms-media-stream-id|ms-mixedrealitycapture|ms-mobileplans|ms-officeapp|ms-people|ms-project|ms-powerpoint|ms-publisher|ms-restoretabcompanion|ms-screenclip|ms-screensketch|ms-search|ms-search-repair|ms-secondary-screen-controller|ms-secondary-screen-setup|ms-settings|ms-settings-airplanemode|ms-settings-bluetooth|ms-settings-camera|ms-settings-cellular|ms-settings-cloudstorage|ms-settings-connectabledevices|ms-settings-displays-topology|ms-settings-emailandaccounts|ms-settings-language|ms-settings-location|ms-settings-lock|ms-settings-nfctransactions|ms-settings-notifications|ms-settings-power|ms-settings-privacy|ms-settings-proximity|ms-settings-screenrotation|ms-settings-wifi|ms-settings-workplace|ms-spd|ms-sttoverlay|ms-transit-to|ms-useractivityset|ms-virtualtouchpad|ms-visio|ms-walk-to|ms-whiteboard|ms-whiteboard-cmd|ms-word|msnim|msrp|msrps|mss|mtqp|mumble|mupdate|mvn|news|nfs|ni|nih|nntp|notes|ocf|oid|onenote|onenote-cmd|opaquelocktoken|openpgp4fpr|pack|palm|paparazzi|payto|pkcs11|platform|pop|pres|prospero|proxy|pwid|psyc|pttp|qb|query|redis|rediss|reload|res|resource|rmi|rsync|rtmfp|rtmp|rtsp|rtsps|rtspu|s3|secondlife|service|session|sftp|sgn|shttp|sieve|simpleledger|sip|sips|skype|smb|sms|smtp|snews|snmp|soap\\.beep|soap\\.beeps|soldat|spiffe|spotify|ssh|steam|stun|stuns|submit|svn|tag|teamspeak|tel|teliaeid|telnet|tftp|tg|things|thismessage|tip|tn3270|tool|ts3server|turn|turns|tv|udp|unreal|urn|ut2004|v-event|vemmi|ventrilo|videotex|vnc|view-source|wais|webcal|wpid|ws|wss|wtai|wyciwyg|xcon|xcon-userid|xfire|xmlrpc\\.beep|xmlrpc\\.beeps|xmpp|xri|ymsgr|z39\\.50|z39\\.50r|z39\\.50s'
-                : implode('|', protocols);
+                : protocols.join('|');
 
         // Simplified URL regex compatible with JS
         const pattern =
@@ -532,13 +532,13 @@ export class Str {
         }
 
         if (!preserveWords) {
-            return rtrim(mb_strimwidth(value, 0, limit, '')) + end;
+            return mb_strimwidth(value, 0, limit, '').trimEnd() + end;
         }
 
         const replaced = preg_replace('/[\n\r]+/', ' ', strip_tags(value));
-        value = trim((replaced ?? '') as string);
+        value = ((replaced ?? '') as string).trim();
 
-        const trimmed = rtrim(mb_strimwidth(value, 0, limit, ''));
+        const trimmed = mb_strimwidth(value, 0, limit, '').trimEnd();
 
         if (mb_substr(value, limit, 1) === ' ') {
             return trimmed + end;
@@ -551,7 +551,7 @@ export class Str {
      * Convert the given string to lower-case.
      */
     public static lower(value: string): string {
-        return mb_strtolower(value);
+        return value.toLocaleLowerCase();
     }
 
     /**
@@ -562,7 +562,7 @@ export class Str {
             const ltrimDefaultCharacters = ' \n\r\t\v\0';
 
             return (preg_replace('~^[\\s' + Str.INVISIBLE_CHARACTERS + ltrimDefaultCharacters + ']+~u', '', value) ??
-                ltrim(value)) as string;
+                value.trimStart()) as string;
         }
 
         return ltrim(value, charlist);
@@ -593,7 +593,7 @@ export class Str {
         const segmentLen = mb_strlen(segment);
         const end = mb_substr(string, startIndex + segmentLen);
 
-        return start + str_repeat(mb_substr(character, 0, 1), segmentLen) + end;
+        return start + mb_substr(character, 0, 1).repeat(segmentLen) + end;
     }
 
     /**
@@ -724,7 +724,7 @@ export class Str {
 
                 while (strlen(string) < length) {
                     const size = length - strlen(string);
-                    const bytesSize = ceil(size / 3) * 3;
+                    const bytesSize = Math.ceil(size / 3) * 3;
                     const bytes = random_bytes(bytesSize);
 
                     string += substr(str_replace(['/', '+', '='], '', btoa(bytes)) as string, 0, size);
@@ -873,7 +873,7 @@ export class Str {
      * Reverse the given string.
      */
     public static reverse(value: string): string {
-        return implode('', array_reverse(mb_str_split(value)));
+        return array_reverse(mb_str_split(value)).join('');
     }
 
     /**
@@ -884,7 +884,7 @@ export class Str {
             const rtrimDefaultCharacters = ' \n\r\t\v\0';
 
             return (preg_replace('~[\\s' + Str.INVISIBLE_CHARACTERS + rtrimDefaultCharacters + ']+$~u', '', value) ??
-                rtrim(value)) as string;
+                value.trimEnd()) as string;
         }
 
         return rtrim(value, charlist);
@@ -939,7 +939,7 @@ export class Str {
         }
 
         for (const needle of needles) {
-            if (needle !== '' && str_starts_with(haystack, needle)) {
+            if (needle !== '' && haystack.startsWith(needle)) {
                 return true;
             }
         }
@@ -965,7 +965,7 @@ export class Str {
 
         const studlyWords = array_map((word: string) => Str.ucfirst(word), words);
 
-        return (Str.studlyCache[key] = implode('', studlyWords));
+        return (Str.studlyCache[key] = studlyWords.join(''));
     }
 
     /**
@@ -1046,7 +1046,7 @@ export class Str {
                     ']+$~u',
                 '',
                 value,
-            ) ?? trim(value)) as string;
+            ) ?? value.trim()) as string;
         }
 
         return trim(value, charlist);
@@ -1085,7 +1085,7 @@ export class Str {
      * Convert the given string to upper-case.
      */
     public static upper(value: string): string {
-        return mb_strtoupper(value);
+        return value.toLocaleUpperCase();
     }
 
     /**
@@ -1118,7 +1118,7 @@ export class Str {
             return value;
         }
 
-        return rtrim(matches[0]) + end;
+        return matches[0].trimEnd() + end;
     }
 
     /**

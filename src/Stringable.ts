@@ -1,7 +1,7 @@
 import { Str } from './Str';
 // prettier-ignore
 import {
-    basename, dirname, explode, FILTER_VALIDATE_INT, filter_var, hash, implode, mb_str_split, preg_split, sscanf, str_repeat, strip_tags,
+    basename, dirname, explode, FILTER_VALIDATE_INT, filter_var, hash, mb_str_split, preg_split, sscanf, strip_tags,
 } from '@balboacodes/php-utils';
 
 export class Stringable {
@@ -39,7 +39,7 @@ export class Stringable {
      * Append the given values to the string.
      */
     public append(...values: string[]): Stringable {
-        return new Stringable(this.value + implode('', values));
+        return new Stringable(this.value + values.join(''));
     }
 
     /**
@@ -320,7 +320,7 @@ export class Stringable {
      * Append a new line to the string.
      */
     public newLine(count: number = 1): Stringable {
-        return this.append(str_repeat('\n', count));
+        return this.append('\n'.repeat(count));
     }
 
     /**
@@ -362,7 +362,7 @@ export class Stringable {
      * Prepend the given values to the string.
      */
     public prepend(...values: string[]): Stringable {
-        return new Stringable(implode('', values) + this.value);
+        return new Stringable(values.join('') + this.value);
     }
 
     /**
